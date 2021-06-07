@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './styles/styles.scss';
+import './styles/styles.css';
 
 
-const template = <p>ASSD ASDSAD from react</p>;
+const template = <p>ASSad </p>
 
 ReactDOM.render(template, document.getElementById('root'));
