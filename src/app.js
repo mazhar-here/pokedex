@@ -2,12 +2,18 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
-import ProgressBar from 'react-bootstrap/ProgressBar'
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Table from 'react-bootstrap/Table';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+
 
 import './styles/styles.css';
 
 
 let bulbasaur={
+	id:1,
 	name:"Bulbasaur",
 	type:"Grass",
 	species:"Bulb Pokemon",
@@ -19,7 +25,10 @@ let bulbasaur={
 	defense:49,
 	spAttack:65,
 	spDefense:65,
-	speed:45
+	speed:45,
+	evolutions:["Ivysaur","Venusaur"],
+	LearnedMoves:{0:"Tackle",4:"Growl",7:"Leech Seed",10:"Vine Whip"},
+	MachineMoves:{"TM02":"Headbutt","TM03":"Curse","TM06":"Toxic","TM10":"Hidden Power" }
 }
 
 
@@ -44,7 +53,7 @@ function Stats(props){
 	const { pokemon } = props;
 	const max=255;
 	return(
-		<div id="stats">
+		<div id="stats" className="my-3">
 			Hp: <ProgressBar striped animated now={pokemon.hp/max*100} />
 			Attack: <ProgressBar striped animated now={pokemon.attack/max*100} />
 			Defense: <ProgressBar striped animated now={pokemon.defense/max*100} />
@@ -57,18 +66,57 @@ function Stats(props){
 	
 }
 
-
-
-
-
-function Description(props){
+function EvolutionList(props){
 	
-	return  <div> 
-				{props.pokemon.flavor}
-			</div>
+	
+	return( <ListGroup horizontal> 
+				{props.evolutionList.map((evolution)=>{
+					return <ListGroup.Item key={evolution} variant="primary">{evolution}</ListGroup.Item>
+					
+				})}
+				
+			</ListGroup>);	
+	
+	
 	
 	
 }
+
+function MoveList(props){
+	return(
+		<Table striped hover>
+			<thead>
+				<tr>
+					<th>{props.moveType}</th>
+					<th>Attack Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+				{Object.keys(props.moveList).map((move)=>{
+					return( 
+						<tr key={move}>
+							<td>{move}</td>
+							<td>{props.moveList[move]}</td>
+							
+						</tr>
+					);	
+							
+				})}
+				
+				
+			</tbody>
+			
+		</Table>
+		
+	
+	);
+	
+}
+
+
+
+
 
 class PokeDex extends React.Component{
 	
@@ -76,15 +124,31 @@ class PokeDex extends React.Component{
 		return( 
 			<Container className="border rounded my-3 py-3 px-5 shadow">
 				<Header pokemon={bulbasaur} />
-				<div className="row">
-					<div className="col-md-4 border rounded" id="poke-image">
+				<Row>
+					<Col md={4} id="poke-image">
 						<img src="images/1.png" width="200" />
-					</div>
-					<div className="border rounded col-md-8 pt-5" id="flavor">
+					</Col>
+					<Col md={8} className="border rounded pt-5" id="flavor">
 						{bulbasaur.flavor}
-					</div>
-				</div>
+					</Col>
+				</Row>
 				<Stats pokemon={bulbasaur} />
+				<div className="my-3">
+					<div className="font-weight-bold my-3">Evolutionary Chain:</div>
+					<EvolutionList evolutionList={bulbasaur.evolutions} />
+				</div>
+				
+				<div className="font-weight-bold my-3">Moves:</div>
+				<Row>
+					
+					<Col>
+						<MoveList moveList={bulbasaur.LearnedMoves} moveType="Level" />
+					</Col>
+					<Col>
+						<MoveList moveList={bulbasaur.MachineMoves} moveType="TM/HM" />
+					</Col>
+				</Row>
+
 			</Container>
 			);
 		
