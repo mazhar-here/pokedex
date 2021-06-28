@@ -1,0 +1,13 @@
+.pokemon-card,.pokemon-card:hover{
+	
+	image-rendering:crisp-edges;
+	color:inherit;
+	text-decoration: none;
+	
+}
+
+.pokemon-card:hover{
+	transform: scale(1.1);
+
+}
+
