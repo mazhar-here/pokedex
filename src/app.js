@@ -36,7 +36,7 @@ let bulbasaur={
 	spAttack:65,
 	spDefense:65,
 	speed:45,
-	evolutions:["Ivysaur","Venusaur"],
+	evolutions:[["Ivysaur","Venusaur"]],
 	LearnedMoves:{0:"Tackle",4:"Growl",7:"Leech Seed",10:"Vine Whip"},
 	MachineMoves:{"TM02":"Headbutt","TM03":"Curse","TM06":"Toxic","TM10":"Hidden Power" }
 }
@@ -56,7 +56,7 @@ let charmander={
 	spAttack:60,
 	spDefense:50,
 	speed:65,
-	evolutions:["Charmeleon","Charizard"],
+	evolutions:[["Charmeleon","Charizard"]],
 	LearnedMoves:{0:"Scratch",0:"Growl",7:"Ember",13:"Smokescreen"},
 	MachineMoves:{"TM01":"Dynamic Punch","TM02":"Headbutt","TM03":"Curse","TM06":"Toxic" }
 }
@@ -77,7 +77,7 @@ let squirtle={
 	spAttack:50,
 	spDefense:64,
 	speed:43,
-	evolutions:["Wartortle","Blastoise"],
+	evolutions:[["Wartortle","Blastoise"],["Wartortle","Blastoise"]],
 	LearnedMoves:{0:"Tackle",0:"Tail Whip",7:"Bubble",10:"Withdraw"},
 	MachineMoves:{"TM01":"Dynamic Punch","TM02":"Headbutt","TM03":"Curse","TM06":"Toxic" }
 }	
@@ -122,9 +122,11 @@ function Stats(props){
 function EvolutionList(props){
 	
 	
-	return( <ListGroup horizontal> 
+	return( <ListGroup className="my-3" horizontal> 
 				{props.evolutionList.map((evolution)=>{
-					return <ListGroup.Item key={evolution} variant="primary">{evolution}</ListGroup.Item>
+					return <ListGroup.Item key={evolution} variant="primary">
+						{evolution}
+					</ListGroup.Item>
 					
 				})}
 				
@@ -195,7 +197,12 @@ class PokemonCardDeck extends React.Component {
 		
 		this.state={
 			show:false,
-			pokemon:{}
+			pokemon:{
+					
+					evolutions:[]
+				
+				
+			}
 			
 		};
 		
@@ -266,7 +273,14 @@ function PokemonModal(props){
 					<Stats pokemon={props.pokemon} />
 					<div className="my-3">
 						<div className="font-weight-bold my-3">Evolutionary Chain:</div>
-						<EvolutionList evolutionList={props.pokemon.evolutions} />
+						
+						{props.pokemon.evolutions.map((evolutionLine,index)=>{
+							
+							 	
+							return <EvolutionList key={index} evolutionList={evolutionLine} />
+							
+						})}
+						 
 					</div>
 					
 					<div className="font-weight-bold my-3">Moves:</div>
@@ -297,12 +311,6 @@ function PokemonModal(props){
 
 class PokeDex extends React.Component{
 	
-	// render(){
-		// return( 
-			
-			// );
-		
-	// }
 	
 	render(){
 		
