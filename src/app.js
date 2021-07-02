@@ -77,7 +77,7 @@ let squirtle={
 	spAttack:50,
 	spDefense:64,
 	speed:43,
-	evolutions:[["Wartortle","Blastoise"],["Wartortle","Blastoise"]],
+	evolutions:[["Wartortle","Blastoise"]],
 	LearnedMoves:{0:"Tackle",0:"Tail Whip",7:"Bubble",10:"Withdraw"},
 	MachineMoves:{"TM01":"Dynamic Punch","TM02":"Headbutt","TM03":"Curse","TM06":"Toxic" }
 }	
