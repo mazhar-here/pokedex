@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/styles.css';
 
+import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Container from 'react-bootstrap/Container';
@@ -15,7 +16,7 @@ import Modal from 'react-bootstrap/Modal';
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import ModalTitle from 'react-bootstrap/ModalTitle';
 import ModalBody from 'react-bootstrap/ModalBody';
-
+import regeneratorRuntime from "regenerator-runtime";
 
 
 
@@ -168,7 +169,7 @@ function PokemonCard(props){
 	return (
 			<a className="pokemon-card" onClick={()=>{props.onClick(props.pokemon)}} 
 				href="#" >
-				<Card style={{ width: '13rem' }} className="text-center">
+				<Card  style={{ width: '13rem' }} className="text-center my-2">
 					<Card.Header as="h5">{props.pokemon.name}</Card.Header>
 					<Card.Img variant="top" 
 						src={"images/sprites/"+props.pokemon.id+".png"} />
@@ -312,11 +313,134 @@ function PokemonModal(props){
 class PokeDex extends React.Component{
 	
 	
+	constructor(props){
+		super(props);
+		
+		this.state={
+			listOfPokemon:[]
+			
+		};
+		
+	
+		this.fetchPokemonList=this.fetchPokemonList.bind(this);
+		
+	}
+	
+	async fetchPokemonList(){
+		
+		let pokemonList=[];
+	
+	
+		for(let id=1;id<25;id++){
+			let currentPokemon={};
+			currentPokemon.MachineMoves={};
+			currentPokemon.LearnedMoves={};
+			
+			let pokemon=await axios.get('https://pokeapi.co/api/v2/pokemon/'+id);
+			
+			currentPokemon.id=pokemon.data.id;
+			currentPokemon.name=pokemon.data.name;
+			currentPokemon.types=[];
+			pokemon.data.types.map(item=>{
+				currentPokemon.types.push(item.type.name);
+				
+			});
+			currentPokemon.height=(pokemon.data.height*0.1).toFixed(2)+"m";
+			currentPokemon.weight=(pokemon.data.weight*0.1).toFixed(2)+"kg";
+			currentPokemon.hp=pokemon.data.stats[0].base_stat;
+			currentPokemon.attack=pokemon.data.stats[1].base_stat;
+			currentPokemon.defense=pokemon.data.stats[2].base_stat;
+			currentPokemon.spAttack=pokemon.data.stats[3].base_stat;
+			currentPokemon.spDefense=pokemon.data.stats[4].base_stat;
+			currentPokemon.speed=pokemon.data.stats[5].base_stat;
+			
+			
+			
+				
+			pokemon.data.moves.forEach((item)=>{
+				item.version_group_details.forEach(async moveVersion=>{
+					if(moveVersion.version_group.name=="gold-silver"){
+						
+						if(moveVersion.move_learn_method.name=="level-up"){
+							currentPokemon.LearnedMoves[moveVersion.level_learned_at]=item.move.name;
+						}
+						
+						
+						if(moveVersion.move_learn_method.name=="machine"){
+							let machineMove=await axios.get(item.move.url);
+							// console.log(move.data);
+							machineMove.data.machines.forEach(async item=>{
+								
+								if(item.version_group.name=="gold-silver"){
+									let machine=await axios.get(item.machine.url);
+									currentPokemon.MachineMoves[machine.data.item.name]=machine.data.move.name;
+								}
+								
+								
+							});
+							
+						}
+					}
+							
+				});
+			});
+			
+			
+			let resp=await axios.get('https://pokeapi.co/api/v2/pokemon-species/'+id);
+			
+			let currentPokemonSpecies=resp.data;
+			currentPokemon.species=currentPokemonSpecies.genera[7].genus;
+			currentPokemonSpecies.flavor_text_entries.map((entry)=>{
+				if(entry.version.name=="gold"){
+					currentPokemon.flavor=entry.flavor_text;
+				}
+			});
+			
+			let resp2=await axios.get(currentPokemonSpecies.evolution_chain.url);
+			let currentPokemonEvolution=resp2.data.chain;
+			let evolutions=[];
+			
+			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
+				let evolutionLine=[];
+				evolutionLine.push(firstEvolution.species.name);
+					
+				firstEvolution.evolves_to.forEach((secondEvolution)=>{
+					
+					evolutionLine.push(secondEvolution.species.name);
+
+				});
+				
+				evolutions.push(evolutionLine);
+			});
+			
+			currentPokemon.evolutions=evolutions;
+				
+		
+			
+			
+			// console.log(currentPokemon);
+			pokemonList.push(currentPokemon);
+			
+						
+		}
+
+		this.setState({
+			listOfPokemon:pokemonList
+		});
+	}
+
+	
+	componentDidMount( ){
+		
+		this.fetchPokemonList();
+		
+	}
+	
 	render(){
 		
 		return(
 			<Container className="border rounded shadow my-3 py-3 px-5">
-				<PokemonCardDeck pokemonList={listOfPokemon} />
+				<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
 			</Container>
 		);
 	}
