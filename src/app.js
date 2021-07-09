@@ -16,6 +16,7 @@ import Modal from 'react-bootstrap/Modal';
 import ModalHeader from 'react-bootstrap/ModalHeader';
 import ModalTitle from 'react-bootstrap/ModalTitle';
 import ModalBody from 'react-bootstrap/ModalBody';
+import Button from 'react-bootstrap/Button'
 import regeneratorRuntime from "regenerator-runtime";
 
 
@@ -259,15 +260,16 @@ class PokeDex extends React.Component{
 		
 	
 		this.fetchPokemonList=this.fetchPokemonList.bind(this);
+		this.handleLoadMore=this.handleLoadMore.bind(this);
 		
 	}
 	
-	async fetchPokemonList(){
+	async fetchPokemonList(first, last){
 		
-		let pokemonList=[];
+		let pokemonList=this.state.listOfPokemon;
 	
 	
-		for(let id=1;id<25;id++){
+		for(let id=first;id<last;id++){
 			let currentPokemon={};
 			currentPokemon.MachineMoves={};
 			currentPokemon.LearnedMoves={};
@@ -350,25 +352,31 @@ class PokeDex extends React.Component{
 			});
 			
 			currentPokemon.evolutions=evolutions;
-				
-		
-			
-			
-			// console.log(currentPokemon);
+	
 			pokemonList.push(currentPokemon);
 			
 						
 		}
 
+		// let tempPokemonList=this.state.listOfPokemon;
+		
+		
 		this.setState({
 			listOfPokemon:pokemonList
 		});
+	}
+	
+	handleLoadMore(){
+		
+		this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+25);
+		
+		
 	}
 
 	
 	componentDidMount( ){
 		
-		this.fetchPokemonList();
+		this.fetchPokemonList(1,26);
 		
 	}
 	
@@ -377,6 +385,7 @@ class PokeDex extends React.Component{
 		return(
 			<Container className="border rounded shadow my-3 py-3 px-5">
 				<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
+				<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
 			</Container>
 		);
 	}
