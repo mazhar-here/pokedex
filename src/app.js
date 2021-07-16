@@ -295,34 +295,41 @@ class PokeDex extends React.Component{
 			
 			
 				
-			pokemon.data.moves.forEach((item)=>{
-				item.version_group_details.forEach(async moveVersion=>{
-					if(moveVersion.version_group.name=="gold-silver"){
-						
-						if(moveVersion.move_learn_method.name=="level-up"){
-							currentPokemon.LearnedMoves[moveVersion.level_learned_at]=item.move.name;
-						}
-						
-						
-						if(moveVersion.move_learn_method.name=="machine"){
-							let machineMove=await axios.get(item.move.url);
-							// console.log(move.data);
-							machineMove.data.machines.forEach(async item=>{
-								
-								if(item.version_group.name=="gold-silver"){
-									let machine=await axios.get(item.machine.url);
-									currentPokemon.MachineMoves[machine.data.item.name]=machine.data.move.name;
-								}
-								
-								
-							});
+			for(let item of pokemon.data.moves){
+				
+				// Promise.all(
+					item.version_group_details.map(async moveVersion=>{
+						if(moveVersion.version_group.name=="gold-silver"){
 							
-						}
-					}
+							if(moveVersion.move_learn_method.name=="level-up"){
+								currentPokemon.LearnedMoves[moveVersion.level_learned_at]=item.move.name;
+							}
 							
-				});
-			});
-			
+							
+							if(moveVersion.move_learn_method.name=="machine"){
+								let machineMove=await axios.get(item.move.url);
+								
+								// Promise.all(
+									machineMove.data.machines.map(async item=>{
+									
+									if(item.version_group.name=="gold-silver"){
+										let machine=await axios.get(item.machine.url);
+									
+										currentPokemon.MachineMoves[machine.data.item.name]=machine.data.move.name;
+									
+									}
+									})	
+								// );		
+							}
+
+					}	
+					
+				})						
+			// );		
+					
+			}	
+					
+					
 			
 			let resp=await axios.get('https://pokeapi.co/api/v2/pokemon-species/'+id);
 			
