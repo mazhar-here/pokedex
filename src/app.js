@@ -140,7 +140,8 @@ class PokemonCardDeck extends React.Component {
 					evolutions:[]
 				
 				
-			}
+			},
+			loading:true
 			
 		};
 		
@@ -158,11 +159,53 @@ class PokemonCardDeck extends React.Component {
 		
 	}
 	
-	handleShow(currentPokemon){
+	async handleShow(currentPokemon){
 		this.setState({
 			show:true,
 			pokemon:currentPokemon
 		});
+		
+		let currentPokemonData=await axios.get("https://pokeapi.co/api/v2/pokemon/"+currentPokemon.name)
+		
+		for(let item of currentPokemonData.data.moves){
+				
+					item.version_group_details.map(async moveVersion=>{
+						if(moveVersion.version_group.name=="gold-silver"){
+							
+							if(moveVersion.move_learn_method.name=="level-up"){
+								currentPokemon.LearnedMoves[moveVersion.level_learned_at]=item.move.name;
+							}
+							
+							
+							if(moveVersion.move_learn_method.name=="machine"){
+								let machineMove=await axios.get(item.move.url);
+								
+								
+									machineMove.data.machines.map(async item=>{
+									
+									if(item.version_group.name=="gold-silver"){
+										let machine=await axios.get(item.machine.url);
+										currentPokemon.MachineMoves[machine.data.item.name]=machine.data.move.name;
+										
+										
+										this.setState({
+											
+											pokemon:currentPokemon
+										});
+									
+									}
+									})	
+									
+							}
+
+					}	
+					
+				})						
+					
+					
+		}
+		
+		
 	
 		
 	}
@@ -295,39 +338,7 @@ class PokeDex extends React.Component{
 			
 			
 				
-			for(let item of pokemon.data.moves){
 				
-				// Promise.all(
-					item.version_group_details.map(async moveVersion=>{
-						if(moveVersion.version_group.name=="gold-silver"){
-							
-							if(moveVersion.move_learn_method.name=="level-up"){
-								currentPokemon.LearnedMoves[moveVersion.level_learned_at]=item.move.name;
-							}
-							
-							
-							if(moveVersion.move_learn_method.name=="machine"){
-								let machineMove=await axios.get(item.move.url);
-								
-								// Promise.all(
-									machineMove.data.machines.map(async item=>{
-									
-									if(item.version_group.name=="gold-silver"){
-										let machine=await axios.get(item.machine.url);
-									
-										currentPokemon.MachineMoves[machine.data.item.name]=machine.data.move.name;
-									
-									}
-									})	
-								// );		
-							}
-
-					}	
-					
-				})						
-			// );		
-					
-			}	
 					
 					
 			
@@ -392,7 +403,13 @@ class PokeDex extends React.Component{
 		return(
 			<Container className="border rounded shadow my-3 py-3 px-5">
 				<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
+				
 				<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
+					
+				
+				
+				
+				
 			</Container>
 		);
 	}
