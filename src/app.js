@@ -310,7 +310,9 @@ class PokeDex extends React.Component{
 	async fetchPokemonList(first, last){
 		
 		let pokemonList=this.state.listOfPokemon;
-	
+		this.setState({
+			loading:true
+		});
 	
 		for(let id=first;id<last;id++){
 			let currentPokemon={};
@@ -380,7 +382,8 @@ class PokeDex extends React.Component{
 		
 		
 		this.setState({
-			listOfPokemon:pokemonList
+			listOfPokemon:pokemonList,
+			loading:false
 		});
 	}
 	
@@ -403,12 +406,26 @@ class PokeDex extends React.Component{
 		return(
 			<Container className="border rounded shadow my-3 py-3 px-5">
 				<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
-				
-				<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
+				{
+					(this.state.loading==false) && 
+					<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
 					
+					
+					
+				}
+				
+				{
+					
+					(this.state.loading==true) && 
+					<div>LOADING...</div>
+					
+					
+					
+				}
 				
 				
 				
+
 				
 			</Container>
 		);
