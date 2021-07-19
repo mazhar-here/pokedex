@@ -18,6 +18,9 @@ import ModalTitle from 'react-bootstrap/ModalTitle';
 import ModalBody from 'react-bootstrap/ModalBody';
 import Button from 'react-bootstrap/Button'
 import regeneratorRuntime from "regenerator-runtime";
+import Spinner from 'react-bootstrap/Spinner';
+import Navbar from 'react-bootstrap/Navbar';
+
 
 
 
@@ -53,8 +56,7 @@ function Stats(props){
 			Sp. Defense: <ProgressBar striped animated now={pokemon.spDefense/max*100} />
 		</div>
 	);
-	
-	
+
 }
 
 function EvolutionList(props){
@@ -103,10 +105,17 @@ function MoveList(props){
 }
 
 function PokemonCard(props){
+	let cardStyle={
+		width: '13rem'
+		
+		
+		
+	}
+	
 	return (
 			<a className="pokemon-card" onClick={()=>{props.onClick(props.pokemon)}} 
-				href="#" >
-				<Card  style={{ width: '13rem' }} className="text-center my-2">
+				>
+				<Card style={cardStyle} className="text-center my-2">
 					<Card.Header as="h5">{props.pokemon.name}</Card.Header>
 					<Card.Img variant="top" 
 						src={"images/sprites/"+props.pokemon.id+".png"} />
@@ -114,7 +123,7 @@ function PokemonCard(props){
 						<Card.Title>
 							{props.pokemon.types.toString()}
 						</Card.Title>
-						<Card.Subtitle className="mb-2 text-muted">
+						<Card.Subtitle className="mb-2">
 							{props.pokemon.species}
 						</Card.Subtitle>
 						
@@ -205,9 +214,7 @@ class PokemonCardDeck extends React.Component {
 					
 		}
 		
-		
 	
-		
 	}
 	
 	
@@ -224,8 +231,8 @@ class PokemonCardDeck extends React.Component {
 				})}
 				
 				
-			<PokemonModal show={this.state.show} 
-				pokemon={this.state.pokemon} handleClose={this.handleClose} />
+				<PokemonModal show={this.state.show} 
+					pokemon={this.state.pokemon} handleClose={this.handleClose} />
 			</CardDeck>
 		
 		);
@@ -301,6 +308,28 @@ class PokeDex extends React.Component{
 			
 		};
 		
+		this.listOfColors={
+			fire: "ce6718",
+			fighting: "d61b1b",
+			normal: "6f8462",
+			water: "1e70bc",
+			grass:"258737",
+			electric: "c8ce18",
+			ice:"4cd3cc",
+			flying:"c278c9",
+			poison:"6b29ce",
+			ground:"c4813a",
+			psychic:"ea4881",
+			dark:"2d272d",
+			rock:"6b4620",
+			bug:"698e2c",
+			ghost:"6b54a5",
+			steel:"9e8ccc",
+			dragon:"5435a3",
+			fairy:"e896b3"
+
+		}
+		
 	
 		this.fetchPokemonList=this.fetchPokemonList.bind(this);
 		this.handleLoadMore=this.handleLoadMore.bind(this);
@@ -337,13 +366,7 @@ class PokeDex extends React.Component{
 			currentPokemon.spDefense=pokemon.data.stats[4].base_stat;
 			currentPokemon.speed=pokemon.data.stats[5].base_stat;
 			
-			
-			
-				
-				
-					
-					
-			
+		
 			let resp=await axios.get('https://pokeapi.co/api/v2/pokemon-species/'+id);
 			
 			let currentPokemonSpecies=resp.data;
@@ -378,8 +401,6 @@ class PokeDex extends React.Component{
 						
 		}
 
-		// let tempPokemonList=this.state.listOfPokemon;
-		
 		
 		this.setState({
 			listOfPokemon:pokemonList,
@@ -389,7 +410,11 @@ class PokeDex extends React.Component{
 	
 	handleLoadMore(){
 		
-		this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+25);
+		if(this.state.listOfPokemon.length>=239)
+			this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+12);
+		else if(this.state.listOfPokemon.length<239)
+			this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+25);
+			
 		
 		
 	}
@@ -397,44 +422,51 @@ class PokeDex extends React.Component{
 	
 	componentDidMount( ){
 		
-		this.fetchPokemonList(1,26);
+		this.fetchPokemonList(1,25);
 		
 	}
 	
 	render(){
 		
 		return(
-			<Container className="border rounded shadow my-3 py-3 px-5">
-				<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
-				{
-					(this.state.loading==false) && 
-					<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
-					
-					
-					
-				}
+			
+			<div>
+				<Navbar sticky="top" bg="dark" variant="dark" expand="lg">
+						<Container>
+							<Navbar.Brand href="#">Pokedex</Navbar.Brand>
+							<Navbar.Text>
+							The Pokemon Encyclopedia 
+							</Navbar.Text>
+						</Container>
+				</Navbar>
 				
-				{
+				<Container className="border rounded shadow my-3 py-3 px-5">
 					
-					(this.state.loading==true) && 
-					<div>LOADING...</div>
+					<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
+					{
+						(this.state.loading==false && this.state.listOfPokemon.length<251 ) && 
+						<div className="text-center">
+							<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
+						</div>
+					}
 					
+					{
+						
+						(this.state.loading==true) && 
+						<div className="text-center">
+							<Spinner animation="border" variant="primary">
+							</Spinner>
+						</div>
+		
+					}
 					
-					
-				}
-				
-				
-				
-
-				
-			</Container>
+		
+				</Container>
+			</div>
 		);
 	}
 	
 }
-
-
-
 
 
 ReactDOM.render(<PokeDex />, document.getElementById('root'));
