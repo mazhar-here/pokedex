@@ -107,9 +107,7 @@ function MoveList(props){
 function PokemonCard(props){
 	let cardStyle={
 		width: '13rem'
-		
-		
-		
+	
 	}
 	
 	return (
@@ -147,8 +145,7 @@ class PokemonCardDeck extends React.Component {
 			pokemon:{
 					
 					evolutions:[]
-				
-				
+
 			},
 			loading:true
 			
