@@ -104,9 +104,52 @@ function MoveList(props){
 	);
 }
 
+function TypeBox(props){
+	
+	let listOfColors={
+		fire: "ce6718",
+		fighting: "d61b1b",
+		normal: "6f8462",
+		water: "1e70bc",
+		grass:"258737",
+		electric: "c8ce18",
+		ice:"4cd3cc",
+		flying:"c278c9",
+		poison:"6f22a5",
+		ground:"c4813a",
+		psychic:"ea4881",
+		dark:"2d272d",
+		rock:"6b4620",
+		bug:"698e2c",
+		ghost:"7a6d9e",
+		steel:"9e8ccc",
+		dragon:"5435a3",
+		fairy:"e896b3"
+
+	}
+		
+	let boxStyle={
+		
+		backgroundColor:'#'+listOfColors[props.type],
+		color:"white",
+		padding:"6px 6px 6px 6px",
+		borderRadius:"4px",
+		display:"inline-block",
+		width:"82px",
+		textTransform:"uppercase",
+		fontSize: "15px"
+
+	}
+
+	return <div className="mx-1" style={boxStyle} >{props.type}</div>	
+	
+	
+}
+
+
 function PokemonCard(props){
 	let cardStyle={
-		width: '13rem'
+		width: '14rem'
 	
 	}
 	
@@ -119,7 +162,20 @@ function PokemonCard(props){
 						src={"images/sprites/"+props.pokemon.id+".png"} />
 					<Card.Body>
 						<Card.Title>
-							{props.pokemon.types.toString()}
+						
+							
+							{props.pokemon.types.map(pokemonType=>{
+								
+								return <TypeBox type={pokemonType} />
+								
+							})
+									
+									
+								
+							}
+							
+							
+
 						</Card.Title>
 						<Card.Subtitle className="mb-2">
 							{props.pokemon.species}
@@ -134,6 +190,10 @@ function PokemonCard(props){
 	);
 
 }
+
+
+
+
 
 class PokemonCardDeck extends React.Component {
 	
@@ -304,29 +364,7 @@ class PokeDex extends React.Component{
 			listOfPokemon:[]
 			
 		};
-		
-		this.listOfColors={
-			fire: "ce6718",
-			fighting: "d61b1b",
-			normal: "6f8462",
-			water: "1e70bc",
-			grass:"258737",
-			electric: "c8ce18",
-			ice:"4cd3cc",
-			flying:"c278c9",
-			poison:"6b29ce",
-			ground:"c4813a",
-			psychic:"ea4881",
-			dark:"2d272d",
-			rock:"6b4620",
-			bug:"698e2c",
-			ghost:"6b54a5",
-			steel:"9e8ccc",
-			dragon:"5435a3",
-			fairy:"e896b3"
 
-		}
-		
 	
 		this.fetchPokemonList=this.fetchPokemonList.bind(this);
 		this.handleLoadMore=this.handleLoadMore.bind(this);
