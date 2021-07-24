@@ -72,7 +72,7 @@ function Stats(props){
 function EvolutionList(props){
 	
 	
-	return( <ListGroup className="my-3" horizontal> 
+	return( <ListGroup className="my-3" > 
 				{props.evolutionList.map((evolution)=>{
 					return <ListGroup.Item key={evolution} variant="primary">
 						{evolution}
@@ -308,10 +308,29 @@ class PokemonCardDeck extends React.Component {
 	
 }
 
+
+
+function EvolutionChain(props){
+	
+	return( <ul className="my-3"> 
+				{props.evolutionList.map((evolution)=>{
+					return( 
+					<li key={evolution}>
+						{evolution}
+					</li>
+					);
+					
+				})}
+				
+			</ul>);	
+	
+	
+}
+
 function PokemonModal(props){
 	return(
 		
-		<Modal show={props.show} onHide={props.handleClose} >
+		<Modal size="lg" show={props.show} onHide={props.handleClose} >
 			
 			<Modal.Body>
 				<Container >
@@ -319,23 +338,26 @@ function PokemonModal(props){
 					
 					<Header pokemon={props.pokemon} />
 					<Row>
-						<Col >
+						<Col md={4} >
 							<img src={"images/"+props.pokemon.id+".png"} width="200" />
 						</Col>
-						<Col className="py-5"  >
+						<Col md={8} className="py-5 "  >
 							{props.pokemon.flavor}
 						</Col>
 					</Row>
 					<Stats pokemon={props.pokemon} />
 					<div className="my-3">
 						<div className="font-weight-bold my-3">Evolutionary Chain:</div>
-						
-						{props.pokemon.evolutions.map((evolutionLine,index)=>{
-							
-							 	
-							return <EvolutionList key={index} evolutionList={evolutionLine} />
-							
-						})}
+						<Row>
+							{props.pokemon.evolutions.map((evolutionLine,index)=>{
+								
+							return(
+								<Col>
+									<EvolutionChain key={index} evolutionList={evolutionLine} />
+								</Col>
+								);
+							})}
+						</Row>
 						 
 					</div>
 					
@@ -426,27 +448,31 @@ class PokeDex extends React.Component{
 			let resp2=await axios.get(currentPokemonSpecies.evolution_chain.url);
 			let currentPokemonEvolution=resp2.data.chain;
 			let evolutions=[];
+			let evolutionLine=[];
+			let evolutionLine2=[];
 			
-			if(currentPokemonEvolution.evolves_to.length==0){
-				
-				evolutions.push([currentPokemonEvolution.species.name]);
-			}
-			else{
 			
-				currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
-					let evolutionLine=[currentPokemonEvolution.species.name];
-					evolutionLine.push(firstEvolution.species.name);
-						
-					firstEvolution.evolves_to.forEach((secondEvolution)=>{
-						
-						evolutionLine.push(secondEvolution.species.name);
-
-					});
+			evolutions.push([currentPokemonEvolution.species.name]);
+		
+			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
+				evolutionLine.push(firstEvolution.species.name);
 					
-					evolutions.push(evolutionLine);
+				
+				firstEvolution.evolves_to.forEach((secondEvolution)=>{
+					
+					evolutionLine2.push(secondEvolution.species.name);
+
 				});
+				
+			});
 			
+			evolutions.push(evolutionLine);
+			evolutions.push(evolutionLine2);
+			if(currentPokemonEvolution.species.name=="eevee"){
+				console.log(evolutionLine);
+				console.log(evolutionLine2);
 			}
+			
 			
 			currentPokemon.evolutions=evolutions;
 	
