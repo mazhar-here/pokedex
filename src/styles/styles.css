@@ -18,3 +18,23 @@
 .center{
 	text-align:center;
 }
+
+.evolution{
+	
+	border-radius: 50%;
+	border: 4px solid gray;
+	width:100px;
+	background-color:#acc6d1
+}
+
+.evolutionListCol{
+	display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+	
+}
+
+.evolutionList{
+	list-style-type: none;
+	
+}

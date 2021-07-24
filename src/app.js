@@ -23,8 +23,6 @@ import Navbar from 'react-bootstrap/Navbar';
 
 
 
-
-
 function Header(props){
 	const { pokemon } = props; 
 	return( <div className="text-center my-3" id="header"> 
@@ -40,9 +38,7 @@ function Header(props){
 						return <TypeBox key={pokemonType} type={pokemonType} />
 						
 					})
-							
-							
-						
+					
 					}
 					
 				</div>
@@ -69,20 +65,7 @@ function Stats(props){
 
 }
 
-function EvolutionList(props){
-	
-	
-	return( <ListGroup className="my-3" > 
-				{props.evolutionList.map((evolution)=>{
-					return <ListGroup.Item key={evolution} variant="primary">
-						{evolution}
-					</ListGroup.Item>
-					
-				})}
-				
-			</ListGroup>);	
-		
-}
+
 
 function MoveList(props){
 	return(
@@ -174,18 +157,14 @@ function PokemonCard(props){
 					<Card.Body>
 						<Card.Title>
 						
-							
 							{props.pokemon.types.map(pokemonType=>{
 								
 								return <TypeBox key={pokemonType} type={pokemonType} />
 								
 							})
-									
-									
 								
 							}
-							
-							
+					
 
 						</Card.Title>
 						<Card.Subtitle className="mb-2">
@@ -201,9 +180,6 @@ function PokemonCard(props){
 	);
 
 }
-
-
-
 
 
 class PokemonCardDeck extends React.Component {
@@ -278,8 +254,7 @@ class PokemonCardDeck extends React.Component {
 					}	
 					
 				})						
-					
-					
+		
 		}
 		
 	
@@ -312,11 +287,15 @@ class PokemonCardDeck extends React.Component {
 
 function EvolutionChain(props){
 	
-	return( <ul className="my-3"> 
+	return( <ul className="my-3 evolutionList"> 
 				{props.evolutionList.map((evolution)=>{
 					return( 
-					<li key={evolution}>
-						{evolution}
+					<li className="my-2" key={evolution}>
+						<div className="evolution">
+							<img width="100px" src={"images/"+evolution+".png"}></img>
+						</div>	
+						
+
 					</li>
 					);
 					
@@ -352,7 +331,7 @@ function PokemonModal(props){
 							{props.pokemon.evolutions.map((evolutionLine,index)=>{
 								
 							return(
-								<Col>
+								<Col className="evolutionListCol">
 									<EvolutionChain key={index} evolutionList={evolutionLine} />
 								</Col>
 								);
@@ -452,27 +431,25 @@ class PokeDex extends React.Component{
 			let evolutionLine2=[];
 			
 			
-			evolutions.push([currentPokemonEvolution.species.name]);
+			evolutions.push([currentPokemonEvolution.species.url.slice(42).match(/[0-9]/g).join("")]);
 		
 			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
-				evolutionLine.push(firstEvolution.species.name);
+				evolutionLine.push(firstEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
 					
 				
 				firstEvolution.evolves_to.forEach((secondEvolution)=>{
 					
-					evolutionLine2.push(secondEvolution.species.name);
+					evolutionLine2.push(secondEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
 
 				});
 				
 			});
 			
-			evolutions.push(evolutionLine);
-			evolutions.push(evolutionLine2);
-			if(currentPokemonEvolution.species.name=="eevee"){
-				console.log(evolutionLine);
-				console.log(evolutionLine2);
-			}
-			
+			if(evolutionLine.length!=0)
+				evolutions.push(evolutionLine);
+			if(evolutionLine2.length!=0)
+				evolutions.push(evolutionLine2);
+		
 			
 			currentPokemon.evolutions=evolutions;
 	
@@ -494,9 +471,7 @@ class PokeDex extends React.Component{
 			this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+12);
 		else if(this.state.listOfPokemon.length<239)
 			this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+25);
-			
-		
-		
+	
 	}
 
 	
