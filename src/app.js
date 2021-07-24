@@ -34,7 +34,17 @@ function Header(props){
 				</h4>
 				
 				<div className="font-weight-bold text-secondary">
-					{pokemon.types.toString()}
+					
+					{pokemon.types.map(pokemonType=>{
+						
+						return <TypeBox key={pokemonType} type={pokemonType} />
+						
+					})
+							
+							
+						
+					}
+					
 				</div>
 				<div className="font-weight-bold text-secondary">{pokemon.species}</div>
 				<div className="font-weight-bold text-secondary">
@@ -137,7 +147,8 @@ function TypeBox(props){
 		display:"inline-block",
 		width:"82px",
 		textTransform:"uppercase",
-		fontSize: "15px"
+		fontSize: "15px",
+		fontWeight:"normal"
 
 	}
 
@@ -166,7 +177,7 @@ function PokemonCard(props){
 							
 							{props.pokemon.types.map(pokemonType=>{
 								
-								return <TypeBox type={pokemonType} />
+								return <TypeBox key={pokemonType} type={pokemonType} />
 								
 							})
 									
@@ -416,18 +427,26 @@ class PokeDex extends React.Component{
 			let currentPokemonEvolution=resp2.data.chain;
 			let evolutions=[];
 			
-			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
-				let evolutionLine=[];
-				evolutionLine.push(firstEvolution.species.name);
-					
-				firstEvolution.evolves_to.forEach((secondEvolution)=>{
-					
-					evolutionLine.push(secondEvolution.species.name);
-
-				});
+			if(currentPokemonEvolution.evolves_to.length==0){
 				
-				evolutions.push(evolutionLine);
-			});
+				evolutions.push([currentPokemonEvolution.species.name]);
+			}
+			else{
+			
+				currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
+					let evolutionLine=[currentPokemonEvolution.species.name];
+					evolutionLine.push(firstEvolution.species.name);
+						
+					firstEvolution.evolves_to.forEach((secondEvolution)=>{
+						
+						evolutionLine.push(secondEvolution.species.name);
+
+					});
+					
+					evolutions.push(evolutionLine);
+				});
+			
+			}
 			
 			currentPokemon.evolutions=evolutions;
 	
