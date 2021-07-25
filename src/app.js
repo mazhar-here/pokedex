@@ -23,6 +23,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 
 
+
 function Header(props){
 	const { pokemon } = props; 
 	return( <div className="text-center my-3" id="header"> 
@@ -290,13 +291,15 @@ function EvolutionChain(props){
 	return( <ul className="my-3 evolutionList"> 
 				{props.evolutionList.map((evolution)=>{
 					return( 
-					<li className="my-2" key={evolution}>
+					<li className="my-2 "  key={evolution}>
 						<div className="evolution">
-							<img width="100px" src={"images/"+evolution+".png"}></img>
+							<img className="w-50" src={"images/"+evolution+".png"}></img>
+							
 						</div>	
 						
 
 					</li>
+					
 					);
 					
 				})}
@@ -322,6 +325,7 @@ function PokemonModal(props){
 						</Col>
 						<Col md={8} className="py-5 "  >
 							{props.pokemon.flavor}
+							
 						</Col>
 					</Row>
 					<Stats pokemon={props.pokemon} />
@@ -331,8 +335,9 @@ function PokemonModal(props){
 							{props.pokemon.evolutions.map((evolutionLine,index)=>{
 								
 							return(
-								<Col className="evolutionListCol">
-									<EvolutionChain key={index} evolutionList={evolutionLine} />
+								<Col key={index} className="evolutionListCol">
+									<EvolutionChain  evolutionList={evolutionLine} />
+								
 								</Col>
 								);
 							})}
