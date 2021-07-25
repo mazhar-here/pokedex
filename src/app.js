@@ -288,15 +288,18 @@ class PokemonCardDeck extends React.Component {
 
 function EvolutionChain(props){
 	
-	return( <ul className="my-3 evolutionList"> 
-				{props.evolutionList.map((evolution)=>{
+	return( <ul className="my-3 pl-0"> 
+				{props.evolutionList.map((evolution,index)=>{
 					return( 
-					<li className="my-2 "  key={evolution}>
-						<div className="evolution">
-							<img className="w-50" src={"images/"+evolution+".png"}></img>
+					<li className="my-2 evolutionList"  key={evolution}>
+						<div className="evolution ">
+							<img className="w-100" src={"images/"+evolution+".png"}></img>
 							
 						</div>	
-						
+						{(props.renderArrow) &&
+							<i className="bi bi-arrow-right pl-5 arrow"></i>
+
+						}
 
 					</li>
 					
@@ -336,7 +339,18 @@ function PokemonModal(props){
 								
 							return(
 								<Col key={index} className="evolutionListCol">
-									<EvolutionChain  evolutionList={evolutionLine} />
+									{(index==props.pokemon.evolutions.length-1)&&
+										<EvolutionChain renderArrow={false}  evolutionList={evolutionLine} />
+									
+									
+									}
+									{(index<props.pokemon.evolutions.length-1)&&
+										<EvolutionChain renderArrow={true}  evolutionList={evolutionLine} />
+									
+									
+									}
+									
+									
 								
 								</Col>
 								);
