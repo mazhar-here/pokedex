@@ -681,6 +681,7 @@ class PokemonForm extends React.Component{
 				renderTooltip:false
 			});
 			console.log(this.state.searchValue);
+			this.props.fetchPokemonByName(this.state.searchValue.toLowerCase());
 		}
 		
 		
@@ -726,13 +727,16 @@ class PokeDex extends React.Component{
 		
 		this.state={
 			listOfPokemon:[],
-			searchValue:""
+			searchValue:"",
+			resetButton:false
 			
 		};
 
 	
 		this.fetchPokemonList=this.fetchPokemonList.bind(this);
 		this.handleLoadMore=this.handleLoadMore.bind(this);
+		this.fetchPokemonByName=this.fetchPokemonByName.bind(this);
+		this.handleReset=this.handleReset.bind(this);
 		
 		
 	}
@@ -745,6 +749,12 @@ class PokeDex extends React.Component{
 	
 	fetchPokemonByName(pokemonName){
 		
+		this.setState({
+				listOfPokemon:[],
+				resetButton:true
+
+			},()=>this.fetchPokemonList(nationalDexList[pokemonName], 
+			nationalDexList[pokemonName]+1));
 		
 		
 		
@@ -842,6 +852,16 @@ class PokeDex extends React.Component{
 			this.fetchPokemonList(this.state.listOfPokemon.length+1, this.state.listOfPokemon.length+25);
 	
 	}
+	
+	handleReset(){
+		this.setState({
+			listOfPokemon:[],
+			resetButton:false
+			
+		},()=>this.fetchPokemonList(1,25));
+		
+		
+	}
 
 	
 	componentDidMount( ){
@@ -859,7 +879,7 @@ class PokeDex extends React.Component{
 						<Container>
 							<Navbar.Brand href="#">Pokedex</Navbar.Brand>
 							
-								<PokemonForm/>
+								<PokemonForm fetchPokemonByName={this.fetchPokemonByName}/>
 						
 							
 							<Navbar.Text>
@@ -873,9 +893,17 @@ class PokeDex extends React.Component{
 	
 					<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
 					{
-						(this.state.loading==false && this.state.listOfPokemon.length<251 ) && 
+						(this.state.loading==false && this.state.listOfPokemon.length<251 && !this.state.resetButton) && 
 						<div className="text-center">
 							<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
+						</div>
+						
+				
+					}
+					{
+						(this.state.loading==false && this.state.resetButton) && 
+						<div className="text-center">
+							<Button variant="primary" onClick={this.handleReset} >Reset</Button>
 						</div>
 					}
 					
