@@ -25,7 +25,7 @@ import Overlay from 'react-bootstrap/Overlay';
 import Tooltip from 'react-bootstrap/Tooltip';
 
 
-
+//List of the National Dex ids and names of all the pokemon till the 2nd Generation
 const nationalDexList={
 			bulbasaur:1,
 			ivysaur:2,
@@ -281,7 +281,7 @@ const nationalDexList={
 		}
 
 
-
+//The header for the pokemon details modal
 function Header(props){
 	const { pokemon } = props; 
 	return( <div className="text-center my-3" id="header"> 
@@ -292,6 +292,7 @@ function Header(props){
 				
 				<div className="font-weight-bold text-secondary">
 					
+					{/*Return a Typebox component for all the types of this pokemon*/}   
 					{pokemon.types.map(pokemonType=>{
 						
 						return <TypeBox key={pokemonType} type={pokemonType} />
@@ -309,6 +310,7 @@ function Header(props){
 	
 }
 
+//The stat progress bars in the Pokemon modal
 function Stats(props){
 	const { pokemon } = props;
 	const max=255;
@@ -325,7 +327,7 @@ function Stats(props){
 }
 
 
-
+// All moves, including all HMs/TMs, of the Pokemon 
 function MoveList(props){
 	return(
 		<Table striped hover>
@@ -358,6 +360,8 @@ function MoveList(props){
 
 function TypeBox(props){
 	
+	
+	//List of the colors of all the types in hex
 	let listOfColors={
 		fire: "ce6718",
 		fighting: "d61b1b",
@@ -379,7 +383,9 @@ function TypeBox(props){
 		fairy:"e896b3"
 
 	}
-		
+	
+	//CSS style object.  The reason for using object/inline CSS is 
+	//to dynamically change the color w.r.t the type of Pokemon	
 	let boxStyle={
 		
 		backgroundColor:'#'+listOfColors[props.type],
@@ -400,6 +406,7 @@ function TypeBox(props){
 }
 
 
+//The pokemon card on the main page
 function PokemonCard(props){
 	let cardStyle={
 		width: '14rem'
@@ -440,7 +447,7 @@ function PokemonCard(props){
 
 }
 
-
+//The container for all the Pokemon cards
 class PokemonCardDeck extends React.Component {
 	
 	constructor(props){
@@ -463,6 +470,7 @@ class PokemonCardDeck extends React.Component {
 		
 	}
 	
+	//Close the Pokemon card and return to the Pokemon Deck
 	handleClose(){
 		this.setState({
 			show:false
@@ -471,12 +479,15 @@ class PokemonCardDeck extends React.Component {
 		
 	}
 	
+	//Show the pokemon Modal. 
 	async handleShow(currentPokemon){
 		this.setState({
 			show:true,
 			pokemon:currentPokemon
 		});
 		
+		
+		//Fetch the pokemon moves data. All the pokemon moves are only fetched when the Modal is shown
 		let currentPokemonData=await axios.get("https://pokeapi.co/api/v2/pokemon/"+currentPokemon.name)
 		
 		for(let item of currentPokemonData.data.moves){
@@ -543,7 +554,7 @@ class PokemonCardDeck extends React.Component {
 }
 
 
-
+//Construct the Pokemon evolution chain with all pictures and arrows
 function EvolutionChain(props){
 	
 	return( <ul className="my-3 pl-0"> 
@@ -570,6 +581,8 @@ function EvolutionChain(props){
 	
 }
 
+
+
 function PokemonModal(props){
 	return(
 		
@@ -578,8 +591,10 @@ function PokemonModal(props){
 			<Modal.Body>
 				<Container >
 				
-					
+					{/*Pokemon header with name, type and species*/}
 					<Header pokemon={props.pokemon} />
+					
+					{/*The image and flavor*/}
 					<Row>
 						<Col  >
 							<img src={"images/"+props.pokemon.id+".png"} width="200" />
@@ -641,7 +656,7 @@ function PokemonModal(props){
 	
 }
 
-
+//The search form in the navigation bar. 
 class PokemonForm extends React.Component{
 	
 	constructor(props){
@@ -666,15 +681,21 @@ class PokemonForm extends React.Component{
 		
 	}
 	
+	
 	handleFormSubmit(e){
 		
-		e.preventDefault();
 		
+		e.preventDefault();														//The form submision is only handled on the browser. 
+																				//Request to the server is disabled
+		
+		
+		//If the entered pokemon couldnt be found, then show the tooltip
+		//Else fetch the pokemon from the PokeApi
 		if(nationalDexList[this.state.searchValue.toLowerCase()]==null){
 			this.setState({
 				renderTooltip:true
 			});
-			console.log("true");
+			
 		}
 		else{
 			this.setState({
@@ -718,7 +739,7 @@ class PokemonForm extends React.Component{
 	
 }
 
-
+//The main app component
 class PokeDex extends React.Component{
 	
 	
@@ -746,7 +767,7 @@ class PokeDex extends React.Component{
 	
 	
 	
-	
+	//Fetch the pokemon from PokeApi using the pokemon name
 	fetchPokemonByName(pokemonName){
 		
 		this.setState({
@@ -761,7 +782,7 @@ class PokeDex extends React.Component{
 		
 	}
 	
-	
+	//Fetch the pokemon from PokeApi using Pokemon id within the range defined by first and last arguments. 
 	async fetchPokemonList(first, last){
 		
 		let pokemonList=this.state.listOfPokemon;
@@ -774,6 +795,7 @@ class PokeDex extends React.Component{
 			currentPokemon.MachineMoves={};
 			currentPokemon.LearnedMoves={};
 			
+			//Fetch pokemon using the id
 			let pokemon=await axios.get('https://pokeapi.co/api/v2/pokemon/'+id);
 			
 			currentPokemon.id=pokemon.data.id;
@@ -792,7 +814,7 @@ class PokeDex extends React.Component{
 			currentPokemon.spDefense=pokemon.data.stats[4].base_stat;
 			currentPokemon.speed=pokemon.data.stats[5].base_stat;
 			
-		
+			//Evolution data is available at the pokemon-species end point
 			let resp=await axios.get('https://pokeapi.co/api/v2/pokemon-species/'+id);
 			
 			let currentPokemonSpecies=resp.data;
@@ -809,7 +831,8 @@ class PokeDex extends React.Component{
 			let evolutionLine=[];
 			let evolutionLine2=[];
 			
-			
+			//The pokemon pictures are stored using IDs. However, evolutionChain object doesnt have any pokemonId property.
+			//So the id is extracted from the urls using regex. 
 			evolutions.push([currentPokemonEvolution.species.url.slice(42).match(/[0-9]/g).join("")]);
 		
 			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
@@ -824,6 +847,7 @@ class PokeDex extends React.Component{
 				
 			});
 			
+			// Only append to evolutionLine if the pokemon has any evolution
 			if(evolutionLine.length!=0)
 				evolutions.push(evolutionLine);
 			if(evolutionLine2.length!=0)
@@ -844,6 +868,7 @@ class PokeDex extends React.Component{
 		});
 	}
 	
+	//Handle the load more button. Fetch further 25 Pokemon
 	handleLoadMore(){
 		
 		if(this.state.listOfPokemon.length>=239)
@@ -853,6 +878,7 @@ class PokeDex extends React.Component{
 	
 	}
 	
+	//Hande the reset button. Returns to the main Pokemon card deck page
 	handleReset(){
 		this.setState({
 			listOfPokemon:[],
@@ -893,6 +919,7 @@ class PokeDex extends React.Component{
 	
 					<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
 					{
+						/*Only show "load more button" when all the pokemon havent already been loaded*/
 						(this.state.loading==false && this.state.listOfPokemon.length<251 && !this.state.resetButton) && 
 						<div className="text-center">
 							<Button variant="primary" onClick={this.handleLoadMore} >Load More Pokemon</Button>
@@ -901,6 +928,7 @@ class PokeDex extends React.Component{
 				
 					}
 					{
+						/*Show the reset button after the searched Pokemon card is being shown*/
 						(this.state.loading==false && this.state.resetButton) && 
 						<div className="text-center">
 							<Button variant="primary" onClick={this.handleReset} >Reset</Button>
@@ -908,7 +936,7 @@ class PokeDex extends React.Component{
 					}
 					
 					{
-						
+						/*When the pokemon are being fetched, show the loading circle*/
 						(this.state.loading==true) && 
 						<div className="text-center">
 							<Spinner animation="border" variant="primary">
