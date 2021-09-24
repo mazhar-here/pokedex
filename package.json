@@ -1,4 +1,5 @@
 {
+  "homepage": "http://mazhar-here.github.io/pokedex",
   "name": "Pokedex",
   "version": "1.0.0",
   "description": "",
@@ -6,7 +7,9 @@
   "scripts": {
     "start": "webpack --mode=development",
     "build": "webpack --mode=production",
-    "dev-server": "webpack serve --mode development"
+    "dev-server": "webpack serve --mode development",
+	"predeploy": "npm run build";
+	"deploy": "gh-pages -d build";
   },
   "keywords": [],
   "author": "",
@@ -17,6 +20,7 @@
     "@babel/preset-react": "^7.13.13",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.6",
+    "gh-pages": "^3.2.3",
     "node-sass": "^6.0.0",
     "sass-loader": "^12.0.0",
     "style-loader": "^2.0.0",
