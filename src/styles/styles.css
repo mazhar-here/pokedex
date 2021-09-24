@@ -2,7 +2,9 @@
 
 .pokemon-card,.pokemon-card:hover{
 	
-	image-rendering:crisp-edges;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 	color:inherit;
 	text-decoration: none;
 	cursor:pointer;
