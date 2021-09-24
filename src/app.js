@@ -414,9 +414,9 @@ function PokemonCard(props){
 	}
 	
 	return (
-			<a className="pokemon-card" onClick={()=>{props.onClick(props.pokemon)}} 
+			<a className="no-decoration text-dark" onClick={()=>{props.onClick(props.pokemon)}} 
 				>
-				<Card style={cardStyle} className="text-center my-2">
+				<Card style={cardStyle} className="pokemon-card text-center my-2">
 					<Card.Header as="h5">{props.pokemon.name}</Card.Header>
 					<Card.Img variant="top" 
 						src={"images/sprites/"+props.pokemon.id+".png"} />
@@ -914,7 +914,7 @@ class PokeDex extends React.Component{
 						</Container>
 				</Navbar>
 				
-				<Container className="border rounded shadow my-3 py-3 px-5">
+				<Container className="my-3 py-3 px-5">
 				
 	
 					<PokemonCardDeck pokemonList={this.state.listOfPokemon} />
