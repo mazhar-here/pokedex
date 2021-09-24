@@ -8,8 +8,8 @@
     "start": "webpack --mode=development",
     "build": "webpack --mode=production",
     "dev-server": "webpack serve --mode development",
-	"predeploy": "npm run build";
-	"deploy": "gh-pages -d build";
+	"predeploy": "npm run build",
+	"deploy": "gh-pages -d public"
   },
   "keywords": [],
   "author": "",
