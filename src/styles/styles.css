@@ -18,6 +18,10 @@
 	z-index: 1;
 }
 
+.close-button{
+	cursor:pointer;
+}
+
 a:hover,a:link,a:visited,a:active{
 	text-decoration: none;
 }
