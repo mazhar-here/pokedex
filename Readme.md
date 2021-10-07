@@ -1,4 +1,4 @@
-#Pokedex
+# Pokedex
 
 A React based Pokedex which covers the 1st and 2nd generation of Pokemon. It uses the REST PokeApi to fetch the pokemon data.
 It uses React-Bootstrap for responsive design and custom CSS is also used where required. I used to play Pokemon a lost as a kid, so
