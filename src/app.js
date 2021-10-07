@@ -457,15 +457,18 @@ class PokeDex extends React.Component{
 			
 			//The pokemon pictures are stored using IDs. However, evolutionChain object doesnt have any pokemonId property.
 			//So the id is extracted from the urls using regex. 
-			evolutions.push([currentPokemonEvolution.species.url.slice(42).match(/[0-9]/g).join("")]);
+			if(nationalDexList.hasOwnProperty(currentPokemonEvolution.species.name))
+				evolutions.push([currentPokemonEvolution.species.url.slice(42).match(/[0-9]/g).join("")]);
 		
 			currentPokemonEvolution.evolves_to.forEach((firstEvolution)=>{
-				evolutionLine.push(firstEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
+				if(nationalDexList.hasOwnProperty(firstEvolution.species.name))
+					evolutionLine.push(firstEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
 					
 				
 				firstEvolution.evolves_to.forEach((secondEvolution)=>{
 					
-					evolutionLine2.push(secondEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
+					if(nationalDexList.hasOwnProperty(secondEvolution.species.name))
+						evolutionLine2.push(secondEvolution.species.url.slice(42).match(/[0-9]/g).join(""));
 
 				});
 				
